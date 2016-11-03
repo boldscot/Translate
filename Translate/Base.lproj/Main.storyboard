@@ -40,10 +40,15 @@
                                     <action selector="translate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CxA-wW-zU2"/>
                                 </connections>
                             </button>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pnf-Pw-J4i">
+                                <frame key="frameInset" minX="16" minY="376" width="343" height="137"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </pickerView>
                         </subviews>
                         <color key="backgroundColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
+                        <outlet property="languagePicker" destination="Pnf-Pw-J4i" id="o8k-51-ZpD"/>
                         <outlet property="textToTranslate" destination="dii-Vg-90N" id="nXi-B8-YYP"/>
                         <outlet property="translatedText" destination="LaV-KV-DTJ" id="THK-b0-wKp"/>
                     </connections>
