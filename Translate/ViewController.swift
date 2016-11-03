@@ -31,6 +31,11 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         languagePicker.dataSource = self
     }
     
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
     // This function resigns the first responder when the return key is pressed on the software keyboard
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if (text == "\n") {
@@ -40,9 +45,10 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         return true
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    // clear text when typing
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        textToTranslate.text = ""
+        translatedText.text = ""
     }
     
     // Number of columns
@@ -62,7 +68,7 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
     
     // This function decides what happens when something in the picker view is selected
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let languageCodes = ["en", "fr", "tr", "ga"]
+        let languageCodes = ["en", "fr", "tr", "ga"]        // array of language codes
         if (component == 0) {
             source = languageCodes[row]
         } else if (component == 1) {
@@ -80,7 +86,8 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         
         let urlStr:String = ("https://api.mymemory.translated.net/get?q="+escapedStr!+"&langpair="+langStr!)
         let url = URL(string: urlStr)
-        let request = URLRequest(url: url!)// Creating Http Request
+        let request = URLRequest(url: url!)     // Creating Http Request
+        
         
         //var data = NSMutableData()var data = NSMutableData()
         
@@ -91,7 +98,7 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         
         var result = "<Translation Error>"
         
-        NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { response, data, error in
+       /* NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { response, data, error in
             
             indicator.stopAnimating()
             
@@ -109,8 +116,54 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
                 
                 self.translatedText.text = result
             }
+        } */
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            indicator.stopAnimating()
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                if(httpResponse.statusCode == 200){
+                    
+                    let jsonDict: NSDictionary!=(try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers)) as! NSDictionary
+                    
+                    if(jsonDict.value(forKey: "responseStatus") as! NSNumber == 200){
+                        let responseData: NSDictionary = jsonDict.object(forKey: "responseData") as! NSDictionary
+                        
+                        result = responseData.object(forKey: "translatedText") as! String
+                    }
+                }
+                
+                self.translatedText.text = result
+            }
         }
+        task.resume()
         
     }
 }
 
+
+
+
+
+
+/*
+ 
+For c++
+ 
+ 2 functions
+    distancefrompoint(vector, boolean)
+        length of ceiling/ground
+        data ground/ceiling
+        int k =1
+        loop through data to length
+            if ship is between k-1 - k break;
+        
+        use k points in slope formula
+        use slope result with formula
+            return result
+ 
+    check collision(vector, boolean)
+        distance = distancefrompoint(vector, boolean)
+        if distance <= 0 && ground/ceiling check
+ 
+ */
