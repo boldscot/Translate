@@ -25,12 +25,13 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        textToTranslate.delegate = self         // set text view delegate as view controller
+        // set view controller as delegate
+        textToTranslate.delegate = self
         languagePicker.delegate = self
         languagePicker.dataSource = self
     }
     
-    // This function resigns the first responder when the return key is pressed
+    // This function resigns the first responder when the return key is pressed on the software keyboard
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if (text == "\n") {
             textToTranslate.resignFirstResponder()
@@ -59,32 +60,15 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         return languagePickerData[row]
     }
     
+    // This function decides what happens when something in the picker view is selected
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        
+        let languageCodes = ["en", "fr", "tr", "ga"]
         if (component == 0) {
-            if (row == 0 ) {
-                source = "en"
-            } else if (row == 1) {
-                source = "fr"
-            } else if (row == 2) {
-                source = "tr"
-            } else if (row == 3) {
-                source = "ga"
-            }
+            source = languageCodes[row]
         } else if (component == 1) {
-            if (row == 0) {
-                dest = "en"
-            } else if (row == 1) {
-                dest = "fr"
-            } else if (row == 2) {
-                dest = "tr"
-            } else if (row == 3) {
-                dest = "ga"
-            }
+           dest = languageCodes[row]
         }
-        
         languages = source + "|" + dest
-        print("languages= " + languages)
     }
     
     
@@ -92,13 +76,10 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         
         let str = textToTranslate.text
         let escapedStr = str?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
-        
         let langStr = (languages).addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
         
         let urlStr:String = ("https://api.mymemory.translated.net/get?q="+escapedStr!+"&langpair="+langStr!)
-        
         let url = URL(string: urlStr)
-        
         let request = URLRequest(url: url!)// Creating Http Request
         
         //var data = NSMutableData()var data = NSMutableData()
