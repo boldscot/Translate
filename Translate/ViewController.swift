@@ -90,7 +90,6 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         
         let session = URLSession.shared
         
-        
         //var data = NSMutableData()var data = NSMutableData()
         
         let indicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
@@ -100,50 +99,56 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         
         var result = "<Translation Error>"
         
-        NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { response, data, error in
-            
+        session.dataTask(with: request) { (data, response, error) in
             indicator.stopAnimating()
             
-            if let httpResponse = response as? HTTPURLResponse {
-                if(httpResponse.statusCode == 200){
-                    
-                    let jsonDict: NSDictionary!=(try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers)) as! NSDictionary
-                    
-                    if(jsonDict.value(forKey: "responseStatus") as! NSNumber == 200){
-                        let responseData: NSDictionary = jsonDict.object(forKey: "responseData") as! NSDictionary
-                        
-                        result = responseData.object(forKey: "translatedText") as! String
-                    }
-                }
-                
-                self.translatedText.text = result
-            }
+    
         }
+    }
+    
+//        NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { response, data, error in
+//            
+//            indicator.stopAnimating()
+//            
+//            if let httpResponse = response as? HTTPURLResponse {
+//                if(httpResponse.statusCode == 200){
+//                    
+//                    let jsonDict: NSDictionary!=(try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers)) as! NSDictionary
+//                    
+//                    if(jsonDict.value(forKey: "responseStatus") as! NSNumber == 200){
+//                        let responseData: NSDictionary = jsonDict.object(forKey: "responseData") as! NSDictionary
+//                        
+//                        result = responseData.object(forKey: "translatedText") as! String
+//                    }
+//                }
+//                
+//                self.translatedText.text = result
+//            }
+//        }
+//      }
+    
+    
+    
+    /*
+     
+     For c++
+     
+     2 functions
+     distancefrompoint(vector, boolean)
+     length of ceiling/ground
+     data ground/ceiling
+     int k =1
+     loop through data to length
+     if ship is between k-1 - k break;
+     
+     use k points in slope formula
+     use slope result with formula
+     return result
+     
+     check collision(vector, boolean)
+     distance = distancefrompoint(vector, boolean)
+     if distance <= 0 && ground/ceiling check
+     
+     */
+
 }
-
-
-
-
-
-
-/*
- 
-For c++
- 
- 2 functions
-    distancefrompoint(vector, boolean)
-        length of ceiling/ground
-        data ground/ceiling
-        int k =1
-        loop through data to length
-            if ship is between k-1 - k break;
-        
-        use k points in slope formula
-        use slope result with formula
-            return result
- 
-    check collision(vector, boolean)
-        distance = distancefrompoint(vector, boolean)
-        if distance <= 0 && ground/ceiling check
- 
- */
