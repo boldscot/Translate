@@ -103,14 +103,22 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
             (data, response, error) in
             indicator.stopAnimating()
             
-            if data != nil {
-                let responseData = data
+            print("We're here")
+            if let httpResponse = response as? HTTPURLResponse {
+                if(httpResponse.statusCode == 200){
+                    
+                    if (data != nil) {
+                        let responseData = data
+                        let json = try? JSONSerialization.jsonObject(with: responseData!, options: []) as? NSDictionary
+                        print("We got data")
+                    } else {
+                        print("No data")
+                    }
                 
-                let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
+                }
             }
-            
-            
-        }
+        }.resume()
+        
     }
     
 //        NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { response, data, error in
