@@ -99,10 +99,17 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         
         var result = "<Translation Error>"
         
-        session.dataTask(with: request) { (data, response, error) in
+        session.dataTask(with: request) {
+            (data, response, error) in
             indicator.stopAnimating()
             
-    
+            if data != nil {
+                let responseData = data
+                
+                let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
+            }
+            
+            
         }
     }
     
