@@ -86,11 +86,7 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
 
         let urlStr:String = ("https://api.mymemory.translated.net/get?q="+escapedStr!+"&langpair="+langStr!)
         let url = URL(string: urlStr)
-        let request = URLRequest(url: url!)     // Creating Http Request
-        
         let session = URLSession.shared
-        
-        //var data = NSMutableData()var data = NSMutableData()
         
         let indicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         indicator.center = view.center
@@ -99,55 +95,32 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         
         var result = "<Translation Error>"
         
-        session.dataTask(with: request) {
+        session.dataTask(with: url!) {
             (data, response, error) in
-            indicator.stopAnimating()
             
-            print("We're here")
             if let httpResponse = response as? HTTPURLResponse {
                 if(httpResponse.statusCode == 200){
                     
-                    if (data != nil) {
-                        let responseData = data
-                        let json = try? JSONSerialization.jsonObject(with: responseData!, options: []) as? NSDictionary
-                        print("We got data")
-                    } else {
-                        print("No data")
+                    let jsonDict: NSDictionary = try! JSONSerialization.jsonObject(with: data!, options: []) as! NSDictionary
+                    
+                    if(jsonDict.value(forKey: "responseStatus") as! NSNumber == 200){
+                        let responseData: NSDictionary = jsonDict.object(forKey: "responseData") as! NSDictionary
+                        result = responseData.object(forKey: "translatedText") as! String
                     }
-                
                 }
             }
+            DispatchQueue.main.async {
+                indicator.stopAnimating()
+                self.translatedText.text = result
+            }
         }.resume()
-        
     }
-    
-//        NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { response, data, error in
-//            
-//            indicator.stopAnimating()
-//            
-//            if let httpResponse = response as? HTTPURLResponse {
-//                if(httpResponse.statusCode == 200){
-//                    
-//                    let jsonDict: NSDictionary!=(try! JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers)) as! NSDictionary
-//                    
-//                    if(jsonDict.value(forKey: "responseStatus") as! NSNumber == 200){
-//                        let responseData: NSDictionary = jsonDict.object(forKey: "responseData") as! NSDictionary
-//                        
-//                        result = responseData.object(forKey: "translatedText") as! String
-//                    }
-//                }
-//                
-//                self.translatedText.text = result
-//            }
-//        }
-//      }
-    
-    
-    
+}
+
     /*
-     
+ 
      For c++
-     
+ 
      2 functions
      distancefrompoint(vector, boolean)
      length of ceiling/ground
@@ -166,4 +139,3 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
      
      */
 
-}
