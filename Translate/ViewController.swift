@@ -14,13 +14,12 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
     @IBOutlet weak var textToTranslate: UITextView!
     @IBOutlet weak var translatedText: UITextView!
     @IBOutlet weak var languagePicker: UIPickerView!
+    @IBOutlet weak var translateButton: UIButton!
     
     let languagePickerData = ["English", "French", "Turkish", "Gaelic"]
     var languages: String = ""
     var source: String = "en"
     var dest: String = "en"
-    
-    //var data = NSMutableData()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +28,25 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         textToTranslate.delegate = self
         languagePicker.delegate = self
         languagePicker.dataSource = self
+        
+        
+        // Improve the look of the button and ui text views
+        translateButton.backgroundColor = UIColor.clear
+        translateButton.layer.cornerRadius = 20
+        translateButton.layer.borderWidth = 2
+        translateButton.layer.borderColor = UIColor.yellow.cgColor
+        
+        textToTranslate.layer.cornerRadius = 6
+        textToTranslate.layer.borderWidth = 2
+        textToTranslate.layer.borderColor = UIColor.yellow.cgColor
+        
+        translatedText.layer.cornerRadius = 6
+        translatedText.layer.borderWidth = 2
+        translatedText.layer.borderColor = UIColor.yellow.cgColor
+        
+        languagePicker.layer.cornerRadius = 6
+        languagePicker.layer.borderWidth = 1
+        languagePicker.layer.borderColor = UIColor.yellow.cgColor
     }
     
     override func didReceiveMemoryWarning() {
@@ -88,7 +106,8 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         let url = URL(string: urlStr)
         let session = URLSession.shared
         
-        let indicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        let indicator = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+        indicator.color = UIColor.yellow
         indicator.center = view.center
         view.addSubview(indicator)
         indicator.startAnimating()
