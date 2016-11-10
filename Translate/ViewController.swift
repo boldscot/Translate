@@ -16,7 +16,7 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
     @IBOutlet weak var languagePicker: UIPickerView!
     @IBOutlet weak var translateButton: UIButton!
     
-    let languagePickerData = [["English", "French"], ["French", "English"], ["Turkish", "Gaelic"], ["Gaelic", "Turkish"]]
+    var languagePickerData = ["English", "French", "Turkish", "Gaelic"]
     var languages: String = ""
     var source: String = "en"
     var dest: String = "fr"
@@ -32,7 +32,7 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         
         // Improve the look of the button and ui text views
         translateButton.backgroundColor = UIColor.clear
-        translateButton.layer.cornerRadius = 20
+        translateButton.layer.cornerRadius = 30
         translateButton.layer.borderWidth = 2
         translateButton.layer.borderColor = UIColor.yellow.cgColor
         
@@ -81,19 +81,19 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
     
     // change color of picker view text, from stack overflow http://stackoverflow.com/questions/29243564/change-uipicker-color-swift
     func pickerView(_ languagepickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-        let titleData = languagePickerData[row][component]
+        let titleData = languagePickerData[row]
         let myTitle = NSAttributedString(string: titleData, attributes: [NSFontAttributeName:UIFont(name: "Helvetica Neue", size: 20.0)!,NSForegroundColorAttributeName:UIColor.yellow])
         return myTitle
     }
     
     // Get data for specific row and column
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return languagePickerData[row][component]
+        return languagePickerData[row]
     }
     
     // This function decides what happens when something in the picker view is selected
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let languageCodes = ["en", "fr", "tr", "ga"]        // array of language codes
+        var languageCodes = ["en", "fr", "tr", "ga"]        // array of language codes
         if (component == 0) {
             source = languageCodes[row]
         } else if (component == 1) {
@@ -105,11 +105,6 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
     
     
     @IBAction func translate(_ sender: AnyObject) {
-        if source == dest {
-            dest = "fr"
-            textToTranslate.text = "Invalid language selection"
-        }
-        
         let str = textToTranslate.text
         let escapedStr = str?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
         let langStr = (languages).addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
@@ -118,11 +113,8 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         let url = URL(string: urlStr)
         let session = URLSession.shared
         
-        let indicator = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
-        indicator.color = UIColor.yellow
-        indicator.center = view.center
-        view.addSubview(indicator)
-        indicator.startAnimating()
+        // Indicator brought in from third party, https://github.com/goktugyil/EZLoadingActivity
+        EZLoadingActivity.show("Loading...", disableUI: true)
         
         var result = "<Translation Error>"
         
@@ -141,33 +133,10 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
                 }
             }
             DispatchQueue.main.async {
-                indicator.stopAnimating()
+                EZLoadingActivity.hide(true, animated: true)
                 self.translatedText.text = result
             }
         }.resume()
             
     }
 }
-
-    /*
- 
-     For c++
- 
-     2 functions
-     distancefrompoint(vector, boolean)
-     length of ceiling/ground
-     data ground/ceiling
-     int k =1
-     loop through data to length
-     if ship is between k-1 - k break;
-     
-     use k points in slope formula
-     use slope result with formula
-     return result
-     
-     check collision(vector, boolean)
-     distance = distancefrompoint(vector, boolean)
-     if distance <= 0 && ground/ceiling check
-     
-     */
-
