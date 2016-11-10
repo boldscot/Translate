@@ -36,15 +36,13 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         translateButton.layer.borderWidth = 2
         translateButton.layer.borderColor = UIColor.yellow.cgColor
         
-        textToTranslate.layer.cornerRadius = 6
         textToTranslate.layer.borderWidth = 2
         textToTranslate.layer.borderColor = UIColor.yellow.cgColor
         
-        translatedText.layer.cornerRadius = 6
+       
         translatedText.layer.borderWidth = 2
         translatedText.layer.borderColor = UIColor.yellow.cgColor
         
-        languagePicker.layer.cornerRadius = 6
         languagePicker.layer.borderWidth = 2
         languagePicker.layer.borderColor = UIColor.yellow.cgColor
     }
