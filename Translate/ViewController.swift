@@ -16,10 +16,10 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
     @IBOutlet weak var languagePicker: UIPickerView!
     @IBOutlet weak var translateButton: UIButton!
     
-    let languagePickerData = ["English", "French", "Turkish", "Gaelic"]
+    let languagePickerData = [["English", "French"], ["French", "English"], ["Turkish", "Gaelic"], ["Gaelic", "Turkish"]]
     var languages: String = ""
     var source: String = "en"
-    var dest: String = "en"
+    var dest: String = "fr"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +45,7 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         translatedText.layer.borderColor = UIColor.yellow.cgColor
         
         languagePicker.layer.cornerRadius = 6
-        languagePicker.layer.borderWidth = 1
+        languagePicker.layer.borderWidth = 2
         languagePicker.layer.borderColor = UIColor.yellow.cgColor
     }
     
@@ -79,9 +79,16 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         return languagePickerData.count
     }
     
+    // change color of picker view text, from stack overflow http://stackoverflow.com/questions/29243564/change-uipicker-color-swift
+    func pickerView(_ languagepickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        let titleData = languagePickerData[row][component]
+        let myTitle = NSAttributedString(string: titleData, attributes: [NSFontAttributeName:UIFont(name: "Helvetica Neue", size: 20.0)!,NSForegroundColorAttributeName:UIColor.yellow])
+        return myTitle
+    }
+    
     // Get data for specific row and column
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return languagePickerData[row]
+        return languagePickerData[row][component]
     }
     
     // This function decides what happens when something in the picker view is selected
@@ -92,11 +99,16 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
         } else if (component == 1) {
            dest = languageCodes[row]
         }
+        
         languages = source + "|" + dest
     }
     
     
     @IBAction func translate(_ sender: AnyObject) {
+        if source == dest {
+            dest = "fr"
+            textToTranslate.text = "Invalid language selection"
+        }
         
         let str = textToTranslate.text
         let escapedStr = str?.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
@@ -119,9 +131,9 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
             
             if let httpResponse = response as? HTTPURLResponse {
                 if(httpResponse.statusCode == 200){
-                    
+                        
                     let jsonDict: NSDictionary = try! JSONSerialization.jsonObject(with: data!, options: []) as! NSDictionary
-                    
+                        
                     if(jsonDict.value(forKey: "responseStatus") as! NSNumber == 200){
                         let responseData: NSDictionary = jsonDict.object(forKey: "responseData") as! NSDictionary
                         result = responseData.object(forKey: "translatedText") as! String
@@ -133,6 +145,7 @@ class ViewController: UIViewController, UITextViewDelegate, UIPickerViewDelegate
                 self.translatedText.text = result
             }
         }.resume()
+            
     }
 }
 
